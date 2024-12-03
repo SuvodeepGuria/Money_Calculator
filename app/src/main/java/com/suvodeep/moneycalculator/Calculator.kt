@@ -1,5 +1,6 @@
 package com.suvodeep.moneycalculator
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
@@ -22,17 +23,18 @@ import com.suvodeep.moneycalculator.ui.mainContent.RoundedButton
 import com.suvodeep.moneycalculator.ui.mainContent.TotalPerPerson
 import kotlin.math.roundToInt
 
+@SuppressLint("AutoboxingStateValueProperty")
 @Preview
 @Composable
 fun Calculator() {
     val inputAmountState = remember { mutableStateOf("") }
     val checkValidState = remember(inputAmountState.value) { inputAmountState.value.trim().isNotEmpty() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val splitState = remember { mutableStateOf(1) }
-    val tipAmount = remember { mutableStateOf(0) }  // Tip as an integer
+    val splitState = remember { mutableIntStateOf(1) }
+    val tipAmount = remember { mutableIntStateOf(0) }  // Tip as an integer
     val totalBill = inputAmountState.value.toFloatOrNull() ?: 0f
-    val totalWithTip = totalBill + tipAmount.value
-    val totalPerPerson = if (splitState.value > 0) totalWithTip / splitState.value else 0f
+    val totalWithTip = totalBill + tipAmount.intValue
+    val totalPerPerson = if (splitState.intValue > 0) totalWithTip / splitState.intValue else 0f
 
     Column(modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.Center) {
@@ -85,7 +87,7 @@ fun Calculator() {
                                     modifier = Modifier.size(40.dp),
                                     imageVector = Icons.Rounded.Remove,
                                     onClick = {
-                                        if (splitState.value > 1) splitState.value -= 1
+                                        if (splitState.intValue > 1) splitState.value -= 1
                                     },
                                 )
                                 Text("${splitState.value}",
